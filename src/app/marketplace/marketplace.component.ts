@@ -3,6 +3,7 @@ import { Album } from '../album.model';
 import { Router } from '@angular/router';
 import { AlbumService } from '../album.service';
 import { AngularFireList } from 'angularfire2/database';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'app-marketplace',
@@ -11,12 +12,12 @@ import { AngularFireList } from 'angularfire2/database';
   providers: [AlbumService]
 })
 export class MarketplaceComponent implements OnInit {
-  albums: AngularFireList<any[]>;
+  albums: Observable<any[]>;
 
   constructor(private router: Router, private albumService: AlbumService) { }
 
   ngOnInit()  {
-    this.albums = this.albumService.getAlbums();
+    this.albums = this.albumService.getAlbums().valueChanges();
   }
 
  goToDetailPage(clickedAlbum: Album)

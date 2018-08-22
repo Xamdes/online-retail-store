@@ -7,7 +7,7 @@ import { AngularFireDatabase, AngularFireList } from 'angularfire2/database';
 @Injectable()
 export class AlbumService
 {
-  albums: AngularFireList<any[]>;
+  albums: AngularFireList<any>;
 
   constructor(private database: AngularFireDatabase) {
     this.albums = database.list('albums');
@@ -19,19 +19,20 @@ export class AlbumService
   }
 
   addAlbum(newAlbum: Album) {
-    this.database.list('albums').push(newAlbum);
+    let tempKey = this.albums.push(newAlbum).key;
+    let replace = new Album(newAlbum.title,newAlbum.artist,newAlbum.description,tempKey);
+    this.albums.update(tempKey,replace);
   }
 
-  getAlbumById(albumId: number)
+  updateAlbum(newAlbum: Album, key) {
+    this.albums.update(key,newAlbum);
+  }
+
+  getAlbumById(albumId)
   {
-    // for(let i = 0; i < ALBUMS.length; i++)
-    // {
-    //   if(ALBUMS[i].id === albumId)
-    //   {
-    //     return ALBUMS[i];
-    //   }
-    // }
-    return null;
+    let result = this.database.list('albums', ref => ref.equalTo(albumId));
+    console.log(result);
+    return this.database.object('albums/' + albumId);
   }
 
 }
